@@ -1,0 +1,13 @@
+---
+- name: Iniciando o Grafana server
+  docker_container:
+    name: grafana
+    image: "{{ grafana_image }}"
+    state: started
+    recreate: yes
+    restart: yes
+    restart_policy: unless-stopped
+    ports:
+      - "3000:3000"
+    # env:
+    #   GF_INSTALL_PLUGINS: "{{ gf_install_plugins }}"

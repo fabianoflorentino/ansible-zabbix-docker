@@ -1,0 +1,20 @@
+---
+- name: Instalação e Configuração do Zabbix em Container
+  hosts:
+    - server
+  gather_facts: False
+  pre_tasks:
+   - setup:
+      gather_subset:
+       - '!all'
+       - '!any'
+       - 'network'
+       - 'virtual'
+  roles:
+    - {role: common,                        tags: common}
+    - {role: docker_images_infrastructure,  tags: docker_images_infrastructure}
+    - {role: docker_mysql,                  tags: docker_mysql}
+    - {role: docker_zabbix_server,          tags: docker_zabbix_server}
+    - {role: docker_zabbix_web,             tags: docker_zabbix_web}
+    - {role: docker_grafana_server,         tags: docker_grafana_server}
+    - {role: zabbix_customize,              tags: zabbix_customize}

@@ -1,0 +1,46 @@
+---
+- name: Copiar as imagens Docker para o Servidor
+  copy:
+    src: "{{ item }}"
+    dest: "/tmp/{{ item }}"
+  loop : "{{ docker_images }}"
+
+# - name: Carregar as imagens Docker
+#   docker_image:
+#     load_path: "/tmp/{{ item }}"
+#     source: load
+#   loop: "{{ docker_images }}"
+
+- name: Image - MySQL
+  docker_image:
+    name: mysql
+    tag: "5.7"
+    load_path: /tmp/mysql-5-7.tar
+    source: load
+
+- name: Image - Zabbix Server
+  docker_image:
+    name: zabbix-server-mysql
+    tag: alpine-4.0-latest
+    load_path: /tmp/ibm-zabbix-server-mysql-centos7-v2.tar
+    source: load
+
+- name: Image - Zabbix Web
+  docker_image:
+    name: zabbix-web-nginx-mysql
+    tag: alpine-4.0-latest
+    load_path: /tmp/zabbix-web-nginx-mysql-alpine-4.0-latest.tar
+    source: load
+
+- name: Image - Grafana Server
+  docker_image:
+    name: grafana
+    tag: latest
+    load_path: /tmp/ibm-grafana.tar
+    source: load
+
+- name: Removendo arquivos de imagens temporários
+  file:
+    path: "/tmp/{{ item }}"
+    state: absent
+  loop: "{{ docker_images }}"

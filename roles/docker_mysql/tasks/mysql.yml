@@ -1,0 +1,15 @@
+---
+- name: MySQL
+  docker_container:
+    name: mysql-server
+    image: "{{ mysql_image }}"
+    state: started
+    recreate: yes
+    restart: yes
+    restart_policy: unless-stopped
+    command: "{{ mysql_command }}"
+    env:
+      MYSQL_DATABASE: "{{ mysql_database }}"
+      MYSQL_USER: "{{ mysql_user }}"
+      MYSQL_PASSWORD: "{{ mysql_password }}"
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"

@@ -1,0 +1,18 @@
+- name: Iniciando o Zabbix Server
+  docker_container:
+    name: "{{ zabbix_server_container_name }}"
+    image: "{{ zabbix_server_image }}"
+    state: started
+    restart: yes
+    recreate: yes
+    restart_policy: unless-stopped
+    links:
+      - "{{ mysql_container_name }}:mysql"
+    ports:
+      - "{{ zabbix_server_ports }}"
+    env:
+      DB_SERVER_HOST: "{{ zabbix_server_db_host }}"
+      MYSQL_DATABASE: "{{ mysql_database }}"
+      MYSQL_USER: "{{ mysql_user }}"
+      MYSQL_PASSWORD: "{{ mysql_password }}"
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"

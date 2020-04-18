@@ -1,0 +1,10 @@
+[all]
+winsrv01    ansible_host=192.168.7.5
+lnxzbx01    ansible_host=192.168.7.15
+lnxawx01    ansible_host=192.168.7.136
+
+[server]
+lnxzbx01
+
+[agent]
+lnxawx01

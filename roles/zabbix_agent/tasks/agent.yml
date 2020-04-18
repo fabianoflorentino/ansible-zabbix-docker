@@ -1,0 +1,22 @@
+---
+- name: Copiando pacote de instalação
+  copy:
+    src: "{{ zabbix_agent_package }}"
+    dest: /tmp/
+
+- name: Instalando o Pacote Zabbix Agent
+  yum:
+    name: "/tmp/{{ zabbix_agent_package }}"
+    state: present
+
+- name: Configurando o Zabbix Agent
+  template:
+    src: zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+  notify: Reiniciando o Agent Zabbix
+
+- name: Iniciando o Serviço Zabbix Agent
+  systemd:
+    name: zabbix-agent
+    state: started
+    enabled: yes

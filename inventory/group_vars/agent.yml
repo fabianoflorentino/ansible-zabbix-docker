@@ -1,0 +1,5 @@
+zabbix_agent_package: "zabbix-agent-4.0.18-1.el7.x86_64.rpm"
+zabbix_server_ip: "192.168.7.15"
+zabbix_host_metadata_linux: "Linux Servers 41e8903a14830a2ebb4c6f95326b75555247a3e2da9336105537b615fc59449c"
+zabbix_host_metadata_windows: "Windows Server a31261ebf34bbbfb1a85b16d9d16327eb34ff03be76b0422c39df1309d794cbc"
+zabbix_agent_port: "10050"

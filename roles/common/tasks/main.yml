@@ -1,0 +1,30 @@
+---
+- name: Atualizando o Sistema
+  yum:
+    name: "*"
+    state: latest
+
+- name: Habilitando o Repositório do Docker
+  yum_repository:
+    name: Docker CE Stable - $basearch
+    description: docker-ce-stable
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    gpgcheck: yes
+    enabled: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+
+- name: Instalando pacotes essenciais
+  yum:
+    name:  "{{ package.to_install }}"
+    state: present
+
+- name: Habilitando os Serviços
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items: "{{ services.to_enabled }}"
+
+- name: Pip
+  pip:
+    name: "{{ pip_module.to_install }}"

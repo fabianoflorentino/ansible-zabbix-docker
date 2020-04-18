@@ -1,0 +1,71 @@
+---
+# Common
+package:
+  to_install:
+    - python-pip
+    - epel-release
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+    - docker-ce
+
+pip_module:
+  to_install:
+    - docker
+
+services:
+  to_enabled:
+    - docker
+
+docker_images:
+  - "mysql-5-7.tar"
+  - "ibm-zabbix-server-mysql-centos7-v2.tar"
+  - "zabbix-web-nginx-mysql-alpine-4.0-latest.tar"
+  - "ibm-grafana.tar"
+
+# MySQL
+mysql_container_name: "mysql-server"
+mysql_image: "mysql:5.7"
+mysql_database: "zabbix"
+mysql_user: "zabbix"
+mysql_password: "zabbix_pwd"
+mysql_root_password: "root_pwd"
+mysql_command: ["--character-set-server=utf8", "--collation-server=utf8_bin"]
+
+# Zabbix Server
+zabbix_server_container_name: "zabbix-server-mysql"
+zabbix_server_image: "ibm/zabbix-server-mysql:centos7-v2"
+zabbix_server_ports: "10051:10051"
+zabbix_server_db_host: "mysql-server"
+zabbix_server_ip: "192.168.7.15"
+zabbix_admin_user: "Admin"
+zabbix_passwd_user: "zabbix"
+zabbix_host_metadata_linux: "Linux Servers 41e8903a14830a2ebb4c6f95326b75555247a3e2da9336105537b615fc59449c"
+zabbix_host_metadata_windows: "Windows Server a31261ebf34bbbfb1a85b16d9d16327eb34ff03be76b0422c39df1309d794cbc"
+
+# Zabbix Web
+zabbix_web_container_name: "zabbix-web-nginx-mysql"
+zabbix_web_image: "zabbix/zabbix-web-nginx-mysql:alpine-4.0-latest"
+zabbix_exp_ports: "8080:80"
+zabbix_web_port: "8080"
+zabbix_web_php_tz: "America/Sao_Paulo"
+
+# Grafana
+grafana_image: "ibm/grafana:latest"
+# gf_install_plugins: "grafana-clock-panel,grafana-simple-json-datasource,alexanderzobnin-zabbix-app"
+
+# Scripts
+script_files:
+  - "zbx_get_token_api.sh"
+
+scripts_zbx_custom:
+  - "slack_alerts.sh"
+  - "zbx_auto_registration_linux_servers.sh"
+  - "zbx_auto_registration_windows_servers.sh"
+  - "zbx_create_media.sh"
+  - "zbx_report_problem_to_slack.sh"
+  - "zext_ssl_expiry.sh"
+  - "zext_ssl_issuer.sh"
+
+# Slack
+slack_incoming_webhook: "https://hooks.slack.com/services/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"

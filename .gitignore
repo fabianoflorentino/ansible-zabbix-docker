@@ -1,0 +1,6 @@
+.DS_Store
+roles/docker_images_infrastructure/files/ibm-grafana.tar
+roles/docker_images_infrastructure/files/ibm-zabbix-server-mysql-centos7-v2.tar
+roles/docker_images_infrastructure/files/mysql-5-7.tar
+roles/docker_images_infrastructure/files/zabbix-web-nginx-mysql-alpine-4.0-latest.tar
+roles/zabbix_agent/files/zabbix-agent-4.0.18-1.el7.x86_64.rpm

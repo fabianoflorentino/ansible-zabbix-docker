@@ -1,0 +1,80 @@
+---
+- name: Aguardando o Zabbix Web Server
+  wait_for:
+    host: "{{ zabbix_server_ip }}"
+    port: "8080"
+    delay: 45
+
+- name: Copiando o Zabbix Script Token
+  template:
+    src: "{{ item }}.j2"
+    dest: "/tmp/{{ item }}"
+    mode: "0755"
+  loop: "{{ script_files }}"
+
+- name: Gerando um token de autenticação
+  command:
+    cmd: bash /tmp/zbx_get_token_api.sh
+  register: zabbix_auth_token
+
+- name: Copiando Scripts de Customização para o Zabbix
+  template:
+    src: "{{ item }}.j2"
+    dest: "/tmp/{{ item }}"
+    mode: "0755"
+  loop: "{{ scripts_zbx_custom }}"
+
+- name: Adicionando scripts ao Zabbix Server
+  shell: |
+    docker cp "/tmp/slack_alerts.sh" {{ zabbix_server_container_name }}:"/usr/lib/zabbix/alertscripts/slack_alerts.sh"
+    docker cp "/tmp/zext_ssl_expiry.sh" {{ zabbix_server_container_name }}:"/usr/lib/zabbix/externalscripts/zext_ssl_expiry.sh"
+    docker cp "/tmp/zext_ssl_issuer.sh" {{ zabbix_server_container_name }}:"/usr/lib/zabbix/externalscripts/zext_ssl_issuer.sh"
+  register: zbx_scripts
+
+- name: Criando Auto Registro de Servidores Linux no Zabbix
+  command:
+    cmd: bash /tmp/zbx_auto_registration_linux_servers.sh
+  register: zbx_auto_registration_linux_servers
+
+- name: Resultado da criação do Auto Registro de Servidores Linux no Zabbix
+  debug:
+    msg: "{{ zbx_auto_registration_linux_servers.stdout }}"
+
+- name: Criando Auto Registro de Servidores Windows no Zabbix
+  command:
+    cmd: bash /tmp/zbx_auto_registration_windows_servers.sh
+  register: zbx_auto_registration_windows_servers
+
+- name: Resultado da criação do Auto Registro de Servidores Windows no Zabbix
+  debug:
+    msg: "{{ zbx_auto_registration_windows_servers.stdout }}"
+
+- name: Criando Slack Alert no Zabbix
+  command:
+    cmd: bash /tmp/zbx_create_media.sh
+  register: slack_media
+
+- name: Resultado da criação do Slack Alert
+  debug:
+    msg: "{{ slack_media.stdout }}"
+
+- name: Criando Slack Reporte de Problemas
+  command:
+    cmd: bash /tmp/zbx_report_problem_to_slack.sh
+  register: zbx_report_problem_to_slack
+
+- name: Resultado da criação do Slack Report de Problema
+  debug:
+    msg: "{{ zbx_report_problem_to_slack.stdout }}"
+
+- name: Removendo Scripts Temporários
+  file:
+    path: "/tmp/{{ item }}"
+    state: absent
+  loop: "{{ script_files }}"
+
+- name: Removendo Scripts Temporários de Customização
+  file:
+    path: "/tmp/{{ item }}"
+    state: absent
+  loop: "{{ scripts_zbx_custom }}"
