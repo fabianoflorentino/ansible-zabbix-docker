@@ -7,4 +7,5 @@ lnxawx01    ansible_host=192.168.7.136
 lnxzbx01
 
 [agent]
+lnxzbx01
 lnxawx01
